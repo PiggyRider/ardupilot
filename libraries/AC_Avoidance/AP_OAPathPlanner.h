@@ -7,6 +7,7 @@
 #include "AP_OABendyRuler.h"
 #include "AP_OADijkstra.h"
 #include "AP_OADatabase.h"
+#include "AP_OAExternal.h"
 
 /*
  * This class provides path planning around fence, stay-out zones and moving obstacles
@@ -23,6 +24,10 @@ public:
     // get singleton instance
     static AP_OAPathPlanner *get_singleton() {
         return _singleton;
+    }
+
+    AP_OAExternal *get_oa_external() {
+        return _oaexternal;
     }
 
     // perform any required initialisation
@@ -53,6 +58,7 @@ public:
         OA_PATHPLAN_BENDYRULER = 1,
         OA_PATHPLAN_DIJKSTRA = 2,
         OA_PATHPLAN_DJIKSTRA_BENDYRULER = 3,
+        OA_PATHPLAN_EXTERNAL = 4,
     };
 
     // enumeration for _OPTION parameter
@@ -104,6 +110,8 @@ private:
     AP_OADijkstra *_oadijkstra;     // Dijkstra's algorithm
     AP_OADatabase _oadatabase;      // Database of dynamic objects to avoid
     uint32_t avoidance_latest_ms;   // last time Dijkstra's or BendyRuler algorithms ran
+
+    AP_OAExternal *_oaexternal; // Bendy Ruler algorithm
 
     bool proximity_only = true;
     static AP_OAPathPlanner *_singleton;

@@ -20,6 +20,7 @@
 #include <AP_Logger/AP_Logger.h>
 #include "AP_OABendyRuler.h"
 #include "AP_OADijkstra.h"
+#include "AP_OAExternal.h"
 
 extern const AP_HAL::HAL &hal;
 
@@ -86,6 +87,11 @@ void AP_OAPathPlanner::init()
     case OA_PATHPLAN_DISABLED:
         // do nothing
         return;
+    case OA_PATHPLAN_EXTERNAL:
+        if (_oaexternal == nullptr) {
+            _oaexternal = new AP_OAExternal();
+        }
+        break;
     case OA_PATHPLAN_BENDYRULER:
         if (_oabendyruler == nullptr) {
             _oabendyruler = new AP_OABendyRuler();
@@ -127,6 +133,7 @@ bool AP_OAPathPlanner::pre_arm_check(char *failure_msg, uint8_t failure_msg_len)
     // check if initialisation has succeeded
     switch (_type) {
     case OA_PATHPLAN_DISABLED:
+    case OA_PATHPLAN_EXTERNAL:
         // do nothing
         break;
     case OA_PATHPLAN_BENDYRULER:
@@ -273,6 +280,15 @@ void AP_OAPathPlanner::avoidance_thread()
         switch (_type) {
         case OA_PATHPLAN_DISABLED:
             continue;
+        case OA_PATHPLAN_EXTERNAL:
+            if (_oaexternal == nullptr) {
+                continue;
+            }
+
+            if (_oaexternal->get_oaexternal_destination(avoidance_request2.current_loc, avoidance_request2.destination, origin_new, destination_new)) {
+                res = OA_SUCCESS;
+            }
+            break;
         case OA_PATHPLAN_BENDYRULER:
             if (_oabendyruler == nullptr) {
                 continue;
