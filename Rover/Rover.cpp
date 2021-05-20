@@ -372,6 +372,10 @@ void Rover::one_second_loop(void)
 
     // send latest param values to wp_nav
     g2.wp_nav.set_turn_params(g2.turn_radius, g2.motors.have_skid_steering());
+
+    gcs().send_text(MAV_SEVERITY_CRITICAL,
+                    "Current distance to destination: %f",
+                     rover.control_mode->get_distance_to_destination());
 }
 
 void Rover::update_current_mode(void)
