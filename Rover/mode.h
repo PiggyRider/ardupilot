@@ -30,7 +30,8 @@ public:
         RTL          = 11,
         SMART_RTL    = 12,
         GUIDED       = 15,
-        INITIALISING = 16
+        INITIALISING = 16,
+        STARWP       = 17
     };
 
     // Constructor
@@ -705,5 +706,33 @@ private:
 
     float _initial_heading_cd;  // vehicle heading (in centi-degrees) at moment vehicle was armed
     float _desired_heading_cd;  // latest desired heading (in centi-degrees) from pilot
+};
+
+class ModeStarWP : public Mode
+{
+public:
+
+    uint32_t mode_number() const override { return STARWP; }
+    const char *name4() const override { return "STARWP"; }
+
+    // methods that affect movement of the vehicle in this mode
+    void update() override;
+
+    // attributes of the mode
+    bool is_autopilot_mode() const override { return true; }
+
+    // return if external control is allowed in this mode (Guided or Guided-within-Auto)
+    bool in_guided_mode() const override { return true; }
+
+protected:
+
+    bool _enter() override;
+
+private:
+
+    Location path[10];
+    int path_num;
+
+    void generate_path();
 };
 
