@@ -48,7 +48,7 @@
 #include <AP_OSD/AP_OSD.h>
 #include <AP_RCTelemetry/AP_CRSF_Telem.h>
  #include <AC_Avoidance/AP_OAPathPlanner.h>
-#include <AC_Avoidance/AP_OAExternal.h>
+
 
 #include <stdio.h>
 
@@ -3118,17 +3118,6 @@ void GCS_MAVLINK::handle_data_packet(const mavlink_message_t &msg)
 #endif
 }
 
-void GCS_MAVLINK::handle_data32_packet(const mavlink_message_t &msg)
-{
-    AP_OAPathPlanner *oapathplanner = AP::ap_oapathplanner();
-    if (oapathplanner != nullptr) {
-        AP_OAExternal *oaexternal = oapathplanner->get_oa_external();
-        if (oaexternal != nullptr) {
-            oaexternal->handle_msg(msg);
-        }
-    }
-}
-
 void GCS_MAVLINK::handle_vision_position_delta(const mavlink_message_t &msg)
 {
 #if HAL_VISUALODOM_ENABLED
@@ -3521,10 +3510,6 @@ void GCS_MAVLINK::handle_common_message(const mavlink_message_t &msg)
     case MAVLINK_MSG_ID_DATA96:
         handle_data_packet(msg);
         break;        
-
-    case MAVLINK_MSG_ID_DATA32:
-        handle_data32_packet(msg);
-        break;
 
     case MAVLINK_MSG_ID_VISION_POSITION_DELTA:
         handle_vision_position_delta(msg);

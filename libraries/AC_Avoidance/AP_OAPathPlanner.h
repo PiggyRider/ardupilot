@@ -73,6 +73,8 @@ public:
     AP_OABendyRuler::OABendyType get_bendy_type() const;
 
     static const struct AP_Param::GroupInfo var_info[];
+    Location OAlocation;
+    uint32_t ObjectTime;
 
 private:
 
@@ -111,10 +113,11 @@ private:
     AP_OADatabase _oadatabase;      // Database of dynamic objects to avoid
     uint32_t avoidance_latest_ms;   // last time Dijkstra's or BendyRuler algorithms ran
 
-    AP_OAExternal *_oaexternal; // Bendy Ruler algorithm
+    AP_OAExternal *_oaexternal; // External OA algorithm
 
     bool proximity_only = true;
     static AP_OAPathPlanner *_singleton;
+
 };
 
 namespace AP {

@@ -88,6 +88,7 @@ const AP_Scheduler::Task Rover::scheduler_tasks[] = {
     SCHED_TASK_CLASS(ModeSmartRTL,        &rover.mode_smartrtl,    save_position,   3,  200),
     SCHED_TASK_CLASS(AP_Notify,           &rover.notify,           update,         50,  300),
     SCHED_TASK(one_second_loop,         1,   1500),
+    SCHED_TASK(update_AR_OAexternal,    1,  1500),
 #if HAL_SPRAYER_ENABLED
     SCHED_TASK_CLASS(AC_Sprayer,          &rover.g2.sprayer,           update,      3,  90),
 #endif
@@ -293,6 +294,18 @@ void Rover::gcs_failsafe_check(void)
     failsafe_trigger(FAILSAFE_EVENT_GCS, "GCS", do_failsafe);
 }
 
+void Rover::update_AR_OAexternal(void)
+{
+    if(!ar_oaexternal.update())
+    {
+        gcs().send_text(MAV_SEVERITY_CRITICAL,
+                                "no message");
+    }else
+    {
+        ar_oaexternal.get_message(g2.oa.OAlocation, g2.oa.ObjectTime);
+    }
+}
+
 /*
   log some key data - 10Hz
  */
@@ -372,6 +385,19 @@ void Rover::one_second_loop(void)
 
     // send latest param values to wp_nav
     g2.wp_nav.set_turn_params(g2.turn_radius, g2.motors.have_skid_steering());
+
+
+    gcs().send_text(MAV_SEVERITY_CRITICAL,
+                    "OAlatitude= %i",
+                     (unsigned int)g2.oa.OAlocation.lat);
+
+
+    //const uint32_t now = AP_HAL::millis();
+    //if (now - last_update_time_ms > 200) {
+            //control_mode = mode_auto;
+        //return;
+        //}
+
 }
 
 void Rover::update_current_mode(void)

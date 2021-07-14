@@ -16,12 +16,13 @@ public:
     AP_OAExternal(const AP_OAExternal &other) = delete;
     AP_OAExternal &operator=(const AP_OAExternal&) = delete;
 
-    void handle_msg(const mavlink_message_t &msg);
+    void update(Location &oalocation, uint32_t &objecttime);
 
     bool get_oaexternal_destination(const Location &current_loc, const Location &destination, Location& origin_new, Location& destination_new);
 
 private:
     HAL_Semaphore _rsem;
     uint32_t last_update_time_ms;
-    Location dest;
+    AP_HAL::UARTDriver *_port;    //UART port
+    Location OAdestination;
 };

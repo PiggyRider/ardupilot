@@ -68,6 +68,7 @@
 #include <AP_Follow/AP_Follow.h>
 #include <AP_OSD/AP_OSD.h>
 #include <AP_WindVane/AP_WindVane.h>
+#include <AR_OAexternal/AR_OAexternal.h>
 
 #ifdef ENABLE_SCRIPTING
 #include <AP_Scripting/AP_Scripting.h>
@@ -183,6 +184,9 @@ private:
     // The rover's current location
     struct Location current_loc;
 
+    // computer OA assistance
+    AR_OAexternal ar_oaexternal{};
+
     // Camera
 #if CAMERA == ENABLED
     AP_Camera camera{MASK_LOG_CAMERA, current_loc};
@@ -284,6 +288,7 @@ private:
     void update_logging1(void);
     void update_logging2(void);
     void one_second_loop(void);
+    void update_AR_OAexternal(void);
     void update_current_mode(void);
     void update_mission(void);
 

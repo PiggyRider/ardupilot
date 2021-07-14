@@ -284,7 +284,7 @@ void AP_OAPathPlanner::avoidance_thread()
             if (_oaexternal == nullptr) {
                 continue;
             }
-
+            _oaexternal->update(OAlocation, ObjectTime);
             if (_oaexternal->get_oaexternal_destination(avoidance_request2.current_loc, avoidance_request2.destination, origin_new, destination_new)) {
                 res = OA_SUCCESS;
             }
